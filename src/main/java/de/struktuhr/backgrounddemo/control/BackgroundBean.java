@@ -9,6 +9,8 @@ import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.BlockingQueue;
+
 @Component
 public class BackgroundBean {
 
@@ -17,12 +19,15 @@ public class BackgroundBean {
     @Autowired
     private DemoService demoService;
 
+    @Autowired
+    private BlockingQueue<RequestObject> inputQueue;
+
     private BackgroundRunner backgroundRunner;
 
     @EventListener
     public void handleApplicationStarted(ApplicationStartedEvent event) {
         log.info("Application Started");
-        backgroundRunner = new BackgroundRunner(demoService);
+        backgroundRunner = new BackgroundRunner(demoService, inputQueue);
         new Thread(backgroundRunner).start();
     }
 
