@@ -32,9 +32,14 @@ public class BackgroundBean {
     }
 
     @EventListener
-    public void handleContextClosed(ContextClosedEvent event) {
+    public void handleContextClosed(ContextClosedEvent event)  {
         log.info("Context Closed");
-        backgroundRunner.stop();
+        try {
+            // Send poison message, in order to initiate the stop process
+            inputQueue.put(RequestObjectHelper.createStopRequest());
+        }
+        catch (InterruptedException ignored) {
+        }
     }
 
 }

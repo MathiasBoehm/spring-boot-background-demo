@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 @Component
@@ -20,7 +19,7 @@ public class BackgroundServiceCaller {
     public String call(Demo demo) {
         String result;
         try {
-            final RequestObject req = createRequtestObject(demo.message);
+            final RequestObject req = RequestObjectHelper.createRequest(demo.message);
             inputQueue.put(req);
 
             // Wait for response
@@ -35,8 +34,4 @@ public class BackgroundServiceCaller {
         return result;
     }
 
-    private RequestObject createRequtestObject(String message) {
-        final BlockingQueue<String> responseQueue = new ArrayBlockingQueue<>(1);
-        return new RequestObject(message, responseQueue);
-    }
 }

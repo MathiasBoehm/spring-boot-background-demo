@@ -28,24 +28,21 @@ public class BackgroundRunner implements Runnable {
                 // This call blocks
                 final RequestObject req = queue.take();
 
-                Thread.sleep(5000);
-
-                log.info("Process Message  {}", req.getPayload());
-
-                String result = req.getPayload() + " processed at " + demoService.service();
-
-                req.getReponseQueue().put(result);
+                if (req.isStopped()) {
+                    log.info("Got stop signal. Initiate stopping");
+                    stopped = true;
+                }
+                else {
+                    log.info("Process Message  {}", req.getPayload());
+                    String result = req.getPayload() + " processed at " + demoService.service();
+                    req.getReponseQueue().put(result);
+                }
 
             } catch (InterruptedException e) {
                 log.warn("BackgroundRunner interrupted");
             }
-
         }
 
         log.info("BackgroundRunner stopped");
-    }
-
-    public void stop() {
-        stopped = true;
     }
 }
