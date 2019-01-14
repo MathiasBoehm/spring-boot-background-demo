@@ -34,7 +34,7 @@ public class BackgroundRunner implements Runnable {
                 }
                 else {
                     log.info("Process Message  {}", req.getPayload());
-                    String result = req.getPayload() + " processed at " + demoService.service();
+                    String result = demoService.service(req.getPayload());
                     req.getReponseQueue().put(result);
                 }
 
